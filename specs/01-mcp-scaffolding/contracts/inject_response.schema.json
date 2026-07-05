@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vantage.dev/protocol/inject_response.schema.json",
+  "title": "InjectResponse",
+  "description": "Edge daemon acknowledgment of probe injection attempt",
+  "type": "object",
+  "required": ["message_type", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "message_type": {
+      "type": "string",
+      "const": "inject_response"
+    },
+    "payload": {
+      "type": "object",
+      "required": ["status", "probe_id", "error_message"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["success", "error"]
+        },
+        "probe_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "error_message": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vantage.dev/protocol/inject_request.schema.json",
+  "title": "InjectRequest",
+  "description": "MCP server command to edge daemon to attach an eBPF probe",
+  "type": "object",
+  "required": ["message_type", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "message_type": {
+      "type": "string",
+      "const": "inject_request"
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "target_binary_path",
+        "hex_offset",
+        "probe_type",
+        "telemetry_format"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "target_binary_path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Absolute path to target binary on edge device"
+        },
+        "hex_offset": {
+          "type": "string",
+          "pattern": "^0x[0-9A-Fa-f]+$",
+          "description": "Raw memory offset; no symbol names permitted"
+        },
+        "probe_type": {
+          "type": "string",
+          "enum": ["uprobe", "kprobe"]
+        },
+        "telemetry_format": {
+          "type": "string",
+          "enum": ["latency_histogram", "counter", "raw"]
+        }
+      }
+    }
+  }
+}

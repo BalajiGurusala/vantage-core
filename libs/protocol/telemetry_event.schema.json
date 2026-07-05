@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vantage.dev/protocol/telemetry_event.schema.json",
+  "title": "TelemetryEvent",
+  "description": "Streaming telemetry from edge daemon for an active probe",
+  "type": "object",
+  "required": ["message_type", "payload"],
+  "additionalProperties": false,
+  "properties": {
+    "message_type": {
+      "type": "string",
+      "const": "telemetry_event"
+    },
+    "payload": {
+      "type": "object",
+      "required": ["probe_id", "timestamp_ns", "raw_data"],
+      "additionalProperties": false,
+      "properties": {
+        "probe_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timestamp_ns": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "raw_data": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Opaque telemetry fields; shape depends on telemetry_format"
+        }
+      }
+    }
+  }
+}
