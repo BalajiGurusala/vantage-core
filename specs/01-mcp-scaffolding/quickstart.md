@@ -168,7 +168,22 @@ Run the following sequence via MCP client or test script (mix of valid and inval
 - `telemetry_sample.payload.raw_data` contains sample telemetry fields.
 
 **Optional live test** (not required for scaffold acceptance):
-- Set `VANTAGE_EDGE_WS_URL=ws://localhost:8765` when edge daemon is available in a future feature.
+- Set `VANTAGE_EDGE_WS_URL=ws://localhost:8765` when edge daemon is available in a future feature. Note: in this scaffold the mock is used even when this variable is set (the variable is read-and-ignored; live behavior arrives with the edge-daemon feature).
+
+---
+
+## SC-007: Bridge Payload Is Hex-Only (No Symbol Names)
+
+**Goal**: The `inject_probe` edge-bridge payload contains only permitted fields and no human-readable symbol names (FR-009, FR-014).
+
+**Steps**:
+1. Invoke `inject_probe` with valid input (see SC-002).
+2. Capture the `inject_request` payload emitted to the mock bridge (via the mock's recorded last request or an integration test hook).
+
+**Expected outcome**:
+- The payload's `payload` object contains exactly `target_binary_path`, `hex_offset`, `probe_type`, and `telemetry_format`.
+- No `symbol_name` (or any other human-readable identifier) field is present.
+- `hex_offset` matches `^0x[0-9A-Fa-f]+$`.
 
 ---
 

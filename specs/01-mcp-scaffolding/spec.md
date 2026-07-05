@@ -83,14 +83,16 @@ A developer contributing to the MCP server wants static type checking enforced s
 - **FR-002**: System MUST expose at least one fully functional tool (`vantage_health`, health/status) that returns structured operational status.
 - **FR-003**: System MUST register placeholder tools for DWARF symbol resolution and edge-daemon probe injection with documented input/output schemas.
 - **FR-004**: Placeholder tools MUST return informative stub responses (not errors) when invoked, indicating the capability is planned but not yet implemented.
-- **FR-005**: System MUST validate tool inputs and return field-level errors for invalid requests.
+- **FR-005**: System MUST validate tool inputs and return field-level errors for invalid requests. Inputs that fail validation MUST be rejected before any edge-bridge payload is emitted (no partial or silent bridge transmission on invalid input).
 - **FR-006**: System MUST enforce static type checking across all scaffold modules with zero tolerated type errors on delivery.
 - **FR-007**: System MUST define a project layout separating MCP protocol handling, tool definitions, and edge-daemon communication interfaces.
 - **FR-008**: System MUST NOT perform actual DWARF parsing, eBPF injection, or edge-daemon implementation in this feature.
-- **FR-009**: System MUST NOT transmit human-readable symbol names over the network bridge; only raw hex offsets per architecture security boundaries.
+- **FR-009**: System MUST NOT transmit human-readable symbol names over the network bridge; only raw hex offsets per architecture security boundaries. This prohibition applies to all bridge message types (inject_request, inject_response, telemetry_event); in particular, `telemetry_event.raw_data` MUST NOT contain human-readable symbol or function names.
 - **FR-010**: System MUST accept MCP client connections without authentication for local development in this scaffold.
 - **FR-011**: System MUST define JSON schema stub documents in `libs/protocol` for inject_request, inject_response, and telemetry_event message types without shared runtime code.
-- **FR-012**: System MUST implement an edge bridge interface with a mock WebSocket client that simulates inject_response and telemetry_event flows for scaffold testing.
+- **FR-012**: System MUST implement an edge bridge interface with a mock WebSocket client that simulates inject_response and telemetry_event flows for scaffold testing. The mock MUST return an `inject_response` with `status: success`; handling of `status: error` responses is deferred to the live edge-daemon feature.
+- **FR-013**: The `inject_probe` tool and its contract MUST document the architecture read-only probe constraint (the edge daemon rejects memory-writing eBPF such as `bpf_probe_write_user`; probes are passive telemetry only, per architecture §3). The scaffold does not enforce this at runtime but records it as a future edge-daemon requirement.
+- **FR-014**: The `inject_probe` edge-bridge payload MUST be limited to `target_binary_path`, `hex_offset`, `probe_type`, and `telemetry_format`, and MUST NOT include `symbol_name` or any other human-readable identifier. Compliance is verifiable by inspecting the emitted inject_request payload (SC-007).
 
 ### Key Entities
 
@@ -110,6 +112,7 @@ A developer contributing to the MCP server wants static type checking enforced s
 - **SC-004**: All tool input validation failures produce human-readable error messages identifying the invalid field(s).
 - **SC-005**: The MCP server remains stable (no crash) after 10 consecutive tool invocations including mix of valid and invalid inputs. Validated manually via the SC-005 sequence in quickstart.md (task T027); no automated test required for this scaffold.
 - **SC-006**: Mock WebSocket client successfully simulates inject_response and at least one telemetry_event sample without a live edge daemon (continuous streaming deferred to edge-daemon feature).
+- **SC-007**: For every `inject_probe` invocation, the emitted edge-bridge payload contains only the four permitted fields (`target_binary_path`, `hex_offset`, `probe_type`, `telemetry_format`) and no symbol names, verifiable by inspecting the mock inject_request payload (quickstart SC-007 / automated test).
 
 ## Assumptions
 
@@ -121,6 +124,10 @@ A developer contributing to the MCP server wants static type checking enforced s
 - Python is the sole language for this feature per project constitution; no Rust code is introduced.
 - Standard developer tooling (package manager, linter, type checker) is acceptable for the scaffold without prescribing specific tool names in this spec.
 - Local development assumes trusted environment; authentication is deferred to a future production-hardening feature.
+- The stdio-only MCP transport exposes no network listener; the scaffold's attack surface is limited to the local process, which is why unauthenticated local development (FR-010) is acceptable for this feature.
+- The health tool response-time target is under 1 second; this sits well within the 5-second acceptance bound in User Story 1's independent test and is an internal performance goal rather than a hard success criterion.
+- Data-protection handling for symbol names held in MCP tool inputs (e.g., redaction, retention) is deferred under the trusted-local assumption; only the network-bridge no-symbol rule (FR-009) is enforced in this feature.
+- A formal threat model is out of scope for the scaffold; the trusted-local assumption stands in for it until a production-hardening feature is specified.
 
 ## Out of Scope
 
@@ -133,3 +140,6 @@ A developer contributing to the MCP server wants static type checking enforced s
 - MCP authentication or authorization
 - Server-Sent Events (SSE) transport for MCP
 - Shared runtime protocol library code in `libs/protocol`
+- Protocol schema versioning or evolution strategy (schemas are unversioned stubs in this feature)
+- Handling of partial or aborted edge-bridge transmissions on mid-request client disconnect (no live bridge exists in the scaffold; the in-process mock completes synchronously)
+- Runtime enforcement of the read-only probe constraint (documented per FR-013 but enforced by the future edge daemon)

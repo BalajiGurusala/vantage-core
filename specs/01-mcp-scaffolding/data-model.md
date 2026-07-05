@@ -171,7 +171,7 @@ Maps to `libs/protocol/telemetry_event.schema.json`.
 | message_type | `str` | yes | Constant `"telemetry_event"` |
 | payload.probe_id | `str` | yes | Matches inject response |
 | payload.timestamp_ns | `int` | yes | Positive integer |
-| payload.raw_data | `object` | yes | Opaque telemetry key-value pairs |
+| payload.raw_data | `object` | yes | Opaque telemetry key-value pairs; MUST NOT contain human-readable symbol or function names (FR-009) |
 
 ---
 
@@ -198,6 +198,8 @@ TelemetryFormat:  latency_histogram | counter | raw
 BridgeConnectionState: mock | connected | disconnected | error
 ```
 
+**Note on `ProbeType`**: Architecture §2.1 exemplifies `uprobe` only. `kprobe` is included in the enum as a reserved, forward-looking value for future edge-daemon support; both are accepted by the schema, and neither is functionally executed in the scaffold (placeholder tool).
+
 ---
 
 ## Validation Rules Summary
@@ -210,6 +212,7 @@ BridgeConnectionState: mock | connected | disconnected | error
 | VR-004 | Invalid tool input | Return field-level error identifying bad field(s) |
 | VR-005 | Bridge payloads | MUST NOT contain symbol names or human-readable function identifiers |
 | VR-006 | Mock bridge | Must emit both InjectResponse and at least one TelemetryEvent |
+| VR-007 | inject_probe bridge payload | Emitted inject_request MUST contain only `target_binary_path`, `hex_offset`, `probe_type`, `telemetry_format`; no symbol names (FR-014, SC-007) |
 
 ---
 

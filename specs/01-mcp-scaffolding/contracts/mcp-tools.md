@@ -148,6 +148,12 @@ Only the following is sent to the edge bridge (no symbol names):
 
 See [inject_request.schema.json](./inject_request.schema.json) for full schema.
 
+### Security & Scope Notes
+
+- **Hex-only payload (FR-009, FR-014, SC-007)**: The bridge payload above is the complete set of fields that cross the wire — `target_binary_path`, `hex_offset`, `probe_type`, `telemetry_format`. Symbol names (e.g., `sendThrottle`) MUST NOT appear in any bridge payload.
+- **Read-only probes (FR-013, Architecture §3)**: Injected probes are strictly passive telemetry/tracing. The edge daemon rejects memory-writing eBPF (e.g., `bpf_probe_write_user`). The scaffold documents this constraint; runtime enforcement is the future edge daemon's responsibility.
+- **Mock response status (FR-012)**: The mock bridge always returns `inject_response.status = "success"`. Handling of `status = "error"` responses is deferred to the live edge-daemon feature.
+
 ### Validation Error Example
 
 Invalid `hex_offset` (missing `0x` prefix):

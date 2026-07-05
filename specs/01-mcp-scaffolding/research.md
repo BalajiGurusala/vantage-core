@@ -53,7 +53,7 @@
 
 ## 4. Mock Edge Bridge
 
-**Decision**: Implement an in-process `MockEdgeBridge` class satisfying an `EdgeBridge` Protocol/ABC. No real WebSocket network required for scaffold acceptance (SC-006). Optional `VANTAGE_EDGE_WS_URL` env var reserved for future live integration; when unset, mock is used exclusively.
+**Decision**: Implement an in-process `MockEdgeBridge` class satisfying an `EdgeBridge` Protocol/ABC. No real WebSocket network required for scaffold acceptance (SC-006). Optional `VANTAGE_EDGE_WS_URL` env var reserved for future live integration; when unset, mock is used exclusively. **Scaffold precedence**: even when `VANTAGE_EDGE_WS_URL` is set, this feature continues to use the mock bridge (the live `LiveEdgeBridge` is a reserved, unimplemented stub); the variable is read-and-ignored so the future feature can wire in live behavior without changing the interface.
 
 **Rationale**: Spec clarifies mock client is sufficient; in-process mock avoids flaky network tests, satisfies FR-012, and simulates `inject_response` followed by `telemetry_event` synchronously or via async callback.
 
