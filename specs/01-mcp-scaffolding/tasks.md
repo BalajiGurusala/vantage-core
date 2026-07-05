@@ -27,12 +27,12 @@
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create directory tree per plan in `apps/mcp-server/` (`src/vantage_mcp/tools/`, `src/vantage_mcp/bridge/`, `tests/unit/`, `tests/integration/`)
-- [ ] T002 Create `apps/mcp-server/pyproject.toml` with uv, Python 3.11+, deps (`mcp>=1.0`, pydantic v2), script entry `vantage-mcp`, and `[tool.mypy]` strict stub
-- [ ] T003 [P] Create `apps/mcp-server/src/vantage_mcp/__init__.py` with package version constant
-- [ ] T004 [P] Create `apps/mcp-server/README.md` skeleton with install, run, and type-check commands
-- [ ] T005 [P] Confirm `libs/protocol/*.schema.json` matches `specs/01-mcp-scaffolding/contracts/*.schema.json` and document parity in `apps/mcp-server/README.md`
-- [ ] T006 Run `uv sync` in `apps/mcp-server/` to produce `uv.lock`
+- [X] T001 Create directory tree per plan in `apps/mcp-server/` (`src/vantage_mcp/tools/`, `src/vantage_mcp/bridge/`, `tests/unit/`, `tests/integration/`)
+- [X] T002 Create `apps/mcp-server/pyproject.toml` with uv, Python 3.11+, deps (`mcp>=1.0`, pydantic v2), script entry `vantage-mcp`, and `[tool.mypy]` strict stub
+- [X] T003 [P] Create `apps/mcp-server/src/vantage_mcp/__init__.py` with package version constant
+- [X] T004 [P] Create `apps/mcp-server/README.md` skeleton with install, run, and type-check commands
+- [X] T005 [P] Confirm `libs/protocol/*.schema.json` matches `specs/01-mcp-scaffolding/contracts/*.schema.json` and document parity in `apps/mcp-server/README.md`
+- [X] T006 Run `uv sync` in `apps/mcp-server/` to produce `uv.lock`
 
 ---
 
@@ -42,12 +42,12 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T007 Implement `EdgeBridge` Protocol/ABC in `apps/mcp-server/src/vantage_mcp/bridge/interface.py`
-- [ ] T008 Implement `MockEdgeBridge` with inject_response and telemetry_event simulation in `apps/mcp-server/src/vantage_mcp/bridge/mock_client.py`
-- [ ] T009 Create shared field-level validation error helper in `apps/mcp-server/src/vantage_mcp/tools/validation.py`
-- [ ] T010 Implement MCP stdio server skeleton using `mcp.server.stdio` in `apps/mcp-server/src/vantage_mcp/server.py`
-- [ ] T011 [P] Create tool registration module in `apps/mcp-server/src/vantage_mcp/tools/__init__.py`
-- [ ] T012 Add startup error handling with remediation messages in `apps/mcp-server/src/vantage_mcp/server.py`
+- [X] T007 Implement `EdgeBridge` Protocol/ABC in `apps/mcp-server/src/vantage_mcp/bridge/interface.py`
+- [X] T008 Implement `MockEdgeBridge` with inject_response and telemetry_event simulation in `apps/mcp-server/src/vantage_mcp/bridge/mock_client.py`
+- [X] T009 Create shared field-level validation error helper in `apps/mcp-server/src/vantage_mcp/tools/validation.py`
+- [X] T010 Implement MCP stdio server skeleton using `mcp.server.stdio` in `apps/mcp-server/src/vantage_mcp/server.py`
+- [X] T011 [P] Create tool registration module in `apps/mcp-server/src/vantage_mcp/tools/__init__.py`
+- [X] T012 Add startup error handling with remediation messages in `apps/mcp-server/src/vantage_mcp/server.py`
 
 **Checkpoint**: Server starts over stdio; tool registration framework ready; no user-facing tools yet.
 
@@ -61,10 +61,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Implement `HealthStatus` Pydantic model and `vantage_health` tool in `apps/mcp-server/src/vantage_mcp/tools/health.py`
-- [ ] T014 [US1] Register `vantage_health` on MCP server in `apps/mcp-server/src/vantage_mcp/server.py`
-- [ ] T015 [US1] Wire `vantage-mcp` CLI entry point to `server.py` main in `apps/mcp-server/pyproject.toml`
-- [ ] T016 [US1] Ensure startup failure paths emit clear errors with remediation in `apps/mcp-server/src/vantage_mcp/server.py`
+- [X] T013 [US1] Implement `HealthStatus` Pydantic model and `vantage_health` tool in `apps/mcp-server/src/vantage_mcp/tools/health.py`
+- [X] T014 [US1] Register `vantage_health` on MCP server in `apps/mcp-server/src/vantage_mcp/server.py`
+- [X] T015 [US1] Wire `vantage-mcp` CLI entry point to `server.py` main in `apps/mcp-server/pyproject.toml`
+- [X] T016 [US1] Ensure startup failure paths emit clear errors with remediation in `apps/mcp-server/src/vantage_mcp/server.py`
 
 **Checkpoint**: MVP — Cursor can connect via stdio and invoke `vantage_health`.
 
@@ -78,12 +78,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T017 [P] [US2] Implement `resolve_dwarf_symbol` placeholder per contracts in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py`
-- [ ] T018 [P] [US2] Implement `inject_probe` placeholder with Pydantic input validation in `apps/mcp-server/src/vantage_mcp/tools/inject.py`
-- [ ] T019 [US2] Integrate `MockEdgeBridge` into `inject_probe` with hex-only bridge payload in `apps/mcp-server/src/vantage_mcp/tools/inject.py`
-- [ ] T020 [US2] Register placeholder tools in `apps/mcp-server/src/vantage_mcp/server.py`
-- [ ] T021 [US2] Map validation failures to field-level errors via `validation.py` in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py` and `inject.py`
-- [ ] T022 [US2] Ensure stub responses include `implemented: false` and informative `message` in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py` and `inject.py`
+- [X] T017 [P] [US2] Implement `resolve_dwarf_symbol` placeholder per contracts in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py`
+- [X] T018 [P] [US2] Implement `inject_probe` placeholder with Pydantic input validation in `apps/mcp-server/src/vantage_mcp/tools/inject.py`
+- [X] T019 [US2] Integrate `MockEdgeBridge` into `inject_probe` with hex-only bridge payload in `apps/mcp-server/src/vantage_mcp/tools/inject.py`
+- [X] T020 [US2] Register placeholder tools in `apps/mcp-server/src/vantage_mcp/server.py`
+- [X] T021 [US2] Map validation failures to field-level errors via `validation.py` in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py` and `inject.py`
+- [X] T022 [US2] Ensure stub responses include `implemented: false` and informative `message` in `apps/mcp-server/src/vantage_mcp/tools/dwarf.py` and `inject.py`
 
 **Checkpoint**: All three tools callable; placeholders return structured stubs; mock bridge simulates edge flow.
 
@@ -97,9 +97,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T023 [US3] Add complete type annotations to all modules under `apps/mcp-server/src/vantage_mcp/`
-- [ ] T024 [US3] Finalize `[tool.mypy]` strict config in `apps/mcp-server/pyproject.toml` (`mypy_path = "src"`, `packages = ["vantage_mcp"]`)
-- [ ] T025 [US3] Document `uv run mypy src/vantage_mcp` command in `apps/mcp-server/README.md`
+- [X] T023 [US3] Add complete type annotations to all modules under `apps/mcp-server/src/vantage_mcp/`
+- [X] T024 [US3] Finalize `[tool.mypy]` strict config in `apps/mcp-server/pyproject.toml` (`mypy_path = "src"`, `packages = ["vantage_mcp"]`)
+- [X] T025 [US3] Document `uv run mypy src/vantage_mcp` command in `apps/mcp-server/README.md`
 
 **Checkpoint**: `uv run mypy src/vantage_mcp` passes with zero errors.
 
@@ -109,9 +109,9 @@
 
 **Purpose**: Documentation, validation, and requirements coverage review
 
-- [ ] T026 [P] Add Cursor MCP config snippet to `apps/mcp-server/README.md` per `specs/01-mcp-scaffolding/research.md`
-- [ ] T027 [P] Validate success criteria SC-001 through SC-006 using `specs/01-mcp-scaffolding/quickstart.md` (includes SC-005 ten-invocation stability sequence) (includes SC-005 ten-invocation stability sequence)
-- [ ] T028 Review FR-001 through FR-012 coverage across `apps/mcp-server/` and `libs/protocol/`
+- [X] T026 [P] Add Cursor MCP config snippet to `apps/mcp-server/README.md` per `specs/01-mcp-scaffolding/research.md`
+- [X] T027 [P] Validate success criteria SC-001 through SC-006 using `specs/01-mcp-scaffolding/quickstart.md` (includes SC-005 ten-invocation stability sequence) — validated via `tests/integration/test_mcp_stdio.py` + `mypy` (SC-003)
+- [X] T028 Review FR-001 through FR-012 coverage across `apps/mcp-server/` and `libs/protocol/`
 
 ---
 
