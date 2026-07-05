@@ -59,7 +59,7 @@ specs/01-mcp-scaffolding/
 │   ├── inject_request.schema.json
 │   ├── inject_response.schema.json
 │   └── telemetry_event.schema.json
-└── tasks.md             # Phase 2 output (/speckit-tasks — not yet created)
+└── tasks.md             # Phase 2 output (/speckit-tasks)
 ```
 
 ### Source Code (repository root)

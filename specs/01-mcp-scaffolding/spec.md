@@ -69,10 +69,10 @@ A developer contributing to the MCP server wants static type checking enforced s
 
 ### Edge Cases
 
-- What happens when the MCP client disconnects mid-request? The server handles gracefully without crashing and can accept new connections.
+- What happens when the MCP client disconnects mid-request? The server process MUST NOT exit with a non-zero code; a subsequent client MUST be able to connect and invoke tools without restarting the server.
 - What happens when a placeholder tool receives an empty or malformed payload? The server returns a validation error, not a crash or silent failure.
 - What happens when the edge-daemon WebSocket endpoint is unreachable during scaffold testing? The mock WebSocket client returns predictable stub responses; a live edge connection is optional and not required for scaffold acceptance. Unreachable live endpoints do not block scaffold validation.
-- What happens when two MCP clients connect simultaneously? The server supports multiple concurrent client sessions without interference.
+- What happens when two MCP clients connect simultaneously? Each client MUST be able to list tools and invoke them independently; one client's invocation MUST NOT prevent another client's invocation from completing.
 - What happens when the developer runs the server without required environment configuration? A clear startup error is shown with remediation steps.
 
 ## Requirements *(mandatory)*
@@ -80,7 +80,7 @@ A developer contributing to the MCP server wants static type checking enforced s
 ### Functional Requirements
 
 - **FR-001**: System MUST provide a runnable MCP server entry point that an AI assistant can connect to via stdio transport.
-- **FR-002**: System MUST expose at least one fully functional tool (health/status) that returns structured operational status.
+- **FR-002**: System MUST expose at least one fully functional tool (`vantage_health`, health/status) that returns structured operational status.
 - **FR-003**: System MUST register placeholder tools for DWARF symbol resolution and edge-daemon probe injection with documented input/output schemas.
 - **FR-004**: Placeholder tools MUST return informative stub responses (not errors) when invoked, indicating the capability is planned but not yet implemented.
 - **FR-005**: System MUST validate tool inputs and return field-level errors for invalid requests.
@@ -95,7 +95,7 @@ A developer contributing to the MCP server wants static type checking enforced s
 ### Key Entities
 
 - **MCP Server**: The control-plane process exposing tools to AI assistants via stdio; attributes include connection status, registered tools, and operational health.
-- **MCP Tool**: A callable capability exposed to AI assistants; attributes include name, description, input schema, and response schema. May be functional (health) or placeholder (DWARF, inject).
+- **MCP Tool**: A callable capability exposed to AI assistants; attributes include name, description, input schema, and response schema. May be functional (health) or placeholder (DWARF, inject). The `inject_probe` tool is a placeholder at the MCP layer (returns `implemented: false`) but may invoke the mock edge bridge to demonstrate future probe-injection flow.
 - **Edge Bridge Interface**: The abstraction for communicating with the edge daemon over JSON-over-WebSockets; attributes include connection state and message types (inject_request, inject_response, telemetry_event). Scaffold delivers interface definition plus mock client only.
 - **Protocol Schema Stub**: JSON schema document defining message shape for a protocol payload; no runtime validation library required in this feature.
 - **Placeholder Response**: A structured stub indicating planned behavior, returned by unimplemented tools.
@@ -108,13 +108,14 @@ A developer contributing to the MCP server wants static type checking enforced s
 - **SC-002**: 100% of registered placeholder tools return structured stub responses (not errors or crashes) when invoked with valid sample input.
 - **SC-003**: Static type checking passes with zero errors across all scaffold modules on delivery.
 - **SC-004**: All tool input validation failures produce human-readable error messages identifying the invalid field(s).
-- **SC-005**: The MCP server remains stable (no crash) after 10 consecutive tool invocations including mix of valid and invalid inputs.
-- **SC-006**: Mock WebSocket client successfully simulates inject_response and telemetry_event without a live edge daemon.
+- **SC-005**: The MCP server remains stable (no crash) after 10 consecutive tool invocations including mix of valid and invalid inputs. Validated manually via the SC-005 sequence in quickstart.md (task T027); no automated test required for this scaffold.
+- **SC-006**: Mock WebSocket client successfully simulates inject_response and at least one telemetry_event sample without a live edge daemon (continuous streaming deferred to edge-daemon feature).
 
 ## Assumptions
 
 - Target users are developers building or operating the Vantage platform, not end-users of embedded devices.
-- The MCP server runs on the developer's laptop or CI/CD runner, not on the embedded Linux target.
+- The MCP server runs on the developer's laptop or CI/CD runner (macOS, Windows, or Linux), not on the embedded Linux target.
+- For scaffold acceptance, mock bridge telemetry is a single sample event per inject_probe invocation; continuous streaming matches production architecture but is out of scope until the edge daemon is implemented.
 - Edge daemon (`apps/edge-daemon`) is out of scope; only the MCP-side bridge interface and mock client are scaffolded.
 - Shared protocol message shapes are defined as JSON schema stub documents in `libs/protocol`; no shared runtime code or code generation in this feature.
 - Python is the sole language for this feature per project constitution; no Rust code is introduced.
