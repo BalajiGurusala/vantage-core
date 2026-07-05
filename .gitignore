@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+
+# C / eBPF / Binaries
+*.o
+*.elf
+*.bin
+testdata/*_production
+testdata/vantage_dummy_fw
+
+# IDEs / OS
+.vscode/
+.idea/
+.DS_Store
